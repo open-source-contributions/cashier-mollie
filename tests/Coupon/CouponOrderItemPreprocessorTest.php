@@ -33,15 +33,15 @@ class CouponOrderItemPreprocessorTest extends BaseTestCase
         $coupon = app()->make(CouponRepository::class)->findOrFail('test-coupon');
         $redeemedCoupon = $coupon->redeemFor($subscription);
         $preprocessor = new CouponOrderItemPreprocessor();
-        $this->assertEquals(0, AppliedCoupon::count());
-        $this->assertEquals(1, $redeemedCoupon->times_left);
+        $this->assertSame(0, AppliedCoupon::count());
+        $this->assertSame(1, $redeemedCoupon->times_left);
 
         $result = $preprocessor->handle($item->toCollection());
 
-        $this->assertEquals(1, AppliedCoupon::count());
+        $this->assertSame(1, AppliedCoupon::count());
         $this->assertInstanceOf(OrderItemCollection::class, $result);
         $this->assertNotEquals($item->toCollection(), $result);
-        $this->assertEquals(0, $redeemedCoupon->refresh()->times_left);
+        $this->assertSame(0, $redeemedCoupon->refresh()->times_left);
     }
 
     /** @test */
@@ -50,7 +50,7 @@ class CouponOrderItemPreprocessorTest extends BaseTestCase
         $preprocessor = new CouponOrderItemPreprocessor();
         $items = factory(OrderItem::class, 1)->make();
         $this->assertInstanceOf(OrderItemCollection::class, $items);
-        $this->assertEquals(0, RedeemedCoupon::count());
+        $this->assertSame(0, RedeemedCoupon::count());
 
         $result = $preprocessor->handle($items);
 

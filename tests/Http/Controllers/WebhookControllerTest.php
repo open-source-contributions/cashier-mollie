@@ -54,7 +54,7 @@ class WebhookControllerTest extends BaseTestCase
 
         $response = $this->controller->handleWebhook($request);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     /** @test **/
@@ -88,7 +88,7 @@ class WebhookControllerTest extends BaseTestCase
         $response->assertStatus(200);
 
         $order = $order->fresh();
-        $this->assertEquals('failed', $order->mollie_payment_status);
+        $this->assertSame('failed', $order->mollie_payment_status);
         $subscription = $subscription->fresh();
         $this->assertTrue($subscription->cancelled());
         $this->assertFalse($subscription->active());
@@ -105,7 +105,7 @@ class WebhookControllerTest extends BaseTestCase
 
         Event::assertDispatched(SubscriptionCancelled::class, function (SubscriptionCancelled $event) use ($subscription) {
             $this->assertTrue($event->subscription->is($subscription));
-            $this->assertEquals($event->reason, SubscriptionCancellationReason::PAYMENT_FAILED);
+            $this->assertSame($event->reason, SubscriptionCancellationReason::PAYMENT_FAILED);
             return true;
         });
     }
@@ -133,8 +133,8 @@ class WebhookControllerTest extends BaseTestCase
 
         $response = $this->controller->handleWebhook($request);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('paid', $order->fresh()->mollie_payment_status);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('paid', $order->fresh()->mollie_payment_status);
         $this->assertTrue($subscription->fresh()->active());
 
         Event::assertDispatched(OrderPaymentPaid::class, function (OrderPaymentPaid $event) use ($order) {
@@ -157,7 +157,7 @@ class WebhookControllerTest extends BaseTestCase
 
         $response = $this->controller->handleWebhook($request);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         Event::assertNotDispatched(OrderPaymentPaid::class);
         Event::assertNotDispatched(OrderPaymentFailed::class);
     }

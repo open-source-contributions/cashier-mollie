@@ -88,9 +88,9 @@ class ConfigPlanRepositoryTest extends BaseTestCase
         $this->assertNull($plan->firstPaymentWebhookUrl());
 
         $this->assertMoneyEURCents(1000, $plan->amount());
-        $this->assertEquals('Test subscription (monthly)', $plan->description());
-        $this->assertEquals('Test', $plan->name());
-        $this->assertEquals('1 month', $plan->interval());
+        $this->assertSame('Test subscription (monthly)', $plan->description());
+        $this->assertSame('Test', $plan->name());
+        $this->assertSame('1 month', $plan->interval());
         $this->assertInstanceOf(OrderItemPreprocessorCollection::class, $plan->orderItemPreprocessors());
         $this->assertCount(0, $plan->orderItemPreprocessors());
     }
@@ -101,16 +101,16 @@ class ConfigPlanRepositoryTest extends BaseTestCase
         Config::set('cashier_plans.defaults.first_payment', $this->firstPaymentDefaultsArray);
         $plan = ConfigPlanRepository::findOrFail('Test');
 
-        $this->assertEquals('Test first payment', $plan->firstPaymentDescription());
+        $this->assertSame('Test first payment', $plan->firstPaymentDescription());
         $this->assertMoneyEURCents(5, $plan->firstPaymentAmount());
-        $this->assertEquals('ideal', $plan->firstPaymentMethod());
-        $this->assertEquals('https://www.foo-redirect-bar.com', $plan->firstPaymentRedirectUrl());
-        $this->assertEquals('https://www.foo-webhook-bar.com', $plan->firstPaymentWebhookUrl());
+        $this->assertSame('ideal', $plan->firstPaymentMethod());
+        $this->assertSame('https://www.foo-redirect-bar.com', $plan->firstPaymentRedirectUrl());
+        $this->assertSame('https://www.foo-webhook-bar.com', $plan->firstPaymentWebhookUrl());
 
         $this->assertMoneyEURCents(1000, $plan->amount());
-        $this->assertEquals('Test subscription (monthly)', $plan->description());
-        $this->assertEquals('Test', $plan->name());
-        $this->assertEquals('1 month', $plan->interval());
+        $this->assertSame('Test subscription (monthly)', $plan->description());
+        $this->assertSame('Test', $plan->name());
+        $this->assertSame('1 month', $plan->interval());
         $this->assertInstanceOf(OrderItemPreprocessorCollection::class, $plan->orderItemPreprocessors());
         $this->assertCount(2, $plan->orderItemPreprocessors());
         $this->assertEquals([

@@ -53,6 +53,6 @@ class OrderNumberGeneratorTest extends BaseTestCase
         config(['cashier.order_number_generator.offset' => 123455]);
         $this->generator = new OrderNumberGenerator;
 
-        $this->assertEquals('2018-0012-3456', $this->generator->generate());
+        $this->assertSame('2018-0012-3456', $this->generator->generate());
     }
 }

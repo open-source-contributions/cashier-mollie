@@ -42,7 +42,7 @@ class ApplySubscriptionCouponToPaymentTest extends BaseTestCase
     /** @test */
     public function testTaxDefaultsToZero()
     {
-        $this->assertEquals(0, $this->action->getTaxPercentage());
+        $this->assertSame(0, $this->action->getTaxPercentage());
         $this->assertMoneyEURCents(0, $this->action->getTax());
     }
 

@@ -15,12 +15,12 @@ class RedeemedCouponTest extends BaseTestCase
         /** @var RedeemedCoupon $redeemedCoupon */
         $redeemedCoupon = factory(RedeemedCoupon::class)->create(['times_left' => 5]);
 
-        $this->assertEquals(5, $redeemedCoupon->times_left);
+        $this->assertSame(5, $redeemedCoupon->times_left);
         $this->assertTrue($redeemedCoupon->isActive());
 
         $redeemedCoupon = $redeemedCoupon->revoke();
 
-        $this->assertEquals(0, $redeemedCoupon->times_left);
+        $this->assertSame(0, $redeemedCoupon->times_left);
         $this->assertFalse($redeemedCoupon->isActive());
     }
 

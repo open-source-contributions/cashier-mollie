@@ -19,7 +19,7 @@ class OrderItemPreprocessorCollectionTest extends BaseTestCase
         $result = $preprocessors->handle($item);
 
         $this->assertInstanceOf(OrderItemCollection::class, $result);
-        $this->assertEquals(2, $result->count());
+        $this->assertSame(2, $result->count());
         $fakePreprocessor->assertOrderItemHandled($item);
     }
 
@@ -34,7 +34,7 @@ class OrderItemPreprocessorCollectionTest extends BaseTestCase
         $result = $preprocessors->handle($item);
 
         $this->assertInstanceOf(OrderItemCollection::class, $result);
-        $this->assertEquals(2, $result->count());
+        $this->assertSame(2, $result->count());
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class OrderItemPreprocessorCollectionTest extends BaseTestCase
         $result = $preprocessors->handle($item);
 
         $this->assertInstanceOf(OrderItemCollection::class, $result);
-        $this->assertEquals(1, $result->count());
+        $this->assertSame(1, $result->count());
         $this->assertTrue($result->first()->is($item));
     }
 

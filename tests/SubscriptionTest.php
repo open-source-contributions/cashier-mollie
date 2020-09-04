@@ -120,16 +120,16 @@ class SubscriptionTest extends BaseTestCase
             'cycle_ends_at' => $now->copy()->addMonth(),
         ]);
 
-        $this->assertEquals(1, $completed_subscription->cycle_progress);
-        $this->assertEquals(0, $unstarted_subscription->cycle_progress);
-        $this->assertEquals(0.5, $progressing_subscription->cycle_progress);
+        $this->assertSame(1, $completed_subscription->cycle_progress);
+        $this->assertSame(0, $unstarted_subscription->cycle_progress);
+        $this->assertSame(0.5, $progressing_subscription->cycle_progress);
     }
 
     /** @test */
     public function testSyncTaxPercentage()
     {
         $user = factory(User::class)->create();
-        $this->assertEquals(0, $user->taxPercentage());
+        $this->assertSame(0, $user->taxPercentage());
 
         $subscription = factory(Subscription::class)->create([
             'tax_percentage' => 21.5,
@@ -137,7 +137,7 @@ class SubscriptionTest extends BaseTestCase
 
         $subscription->syncTaxPercentage();
 
-        $this->assertEquals(0, $subscription->tax_percentage);
+        $this->assertSame(0, $subscription->tax_percentage);
     }
 
     /** @test */
@@ -162,12 +162,12 @@ class SubscriptionTest extends BaseTestCase
         $this->assertSame("1", $item_1->orderable_id);
         $this->assertSame("1", $item_1->owner_id);
         $this->assertSame("Monthly payment", $item_1->description);
-        $this->assertSame(null, $item_1->description_extra_lines);
+        $this->assertNull($item_1->description_extra_lines);
         $this->assertSame("EUR", $item_1->currency);
         $this->assertSame("1", $item_1->quantity);
         $this->assertSame("1000", $item_1->unit_price);
         $this->assertSame("0", $item_1->tax_percentage);
-        $this->assertSame(null, $item_1->order_id);
+        $this->assertNull($item_1->order_id);
 
         $item_1->process();
 
@@ -187,12 +187,12 @@ class SubscriptionTest extends BaseTestCase
         $this->assertSame("1", $item_2->orderable_id);
         $this->assertSame("1", $item_2->owner_id);
         $this->assertSame("Monthly payment", $item_2->description);
-        $this->assertSame(null, $item_2->description_extra_lines);
+        $this->assertNull($item_2->description_extra_lines);
         $this->assertSame("EUR", $item_2->currency);
         $this->assertSame("1", $item_2->quantity);
         $this->assertSame("1000", $item_2->unit_price);
         $this->assertSame("0", $item_2->tax_percentage);
-        $this->assertSame(null, $item_2->order_id);
+        $this->assertNull($item_2->order_id);
 
 
         $item_2->process();
@@ -213,12 +213,12 @@ class SubscriptionTest extends BaseTestCase
         $this->assertSame("1", $item_3->orderable_id);
         $this->assertSame("1", $item_3->owner_id);
         $this->assertSame("Monthly payment", $item_3->description);
-        $this->assertSame(null, $item_3->description_extra_lines);
+        $this->assertNull($item_3->description_extra_lines);
         $this->assertSame("EUR", $item_3->currency);
         $this->assertSame("1", $item_3->quantity);
         $this->assertSame("1000", $item_3->unit_price);
         $this->assertSame("0", $item_3->tax_percentage);
-        $this->assertSame(null, $item_3->order_id);
+        $this->assertNull($item_3->order_id);
     }
 
     /** @test */

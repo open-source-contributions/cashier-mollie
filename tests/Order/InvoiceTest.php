@@ -40,9 +40,9 @@ class InvoiceTest extends BaseTestCase
             ->addItems(new Collection([$itemA, $itemB]))
             ->addItem($itemC);
 
-        $this->assertEquals('EUR', $invoice->currency());
+        $this->assertSame('EUR', $invoice->currency());
         $this->assertMoneyEURCents(6000, $invoice->rawSubtotal());
-        $this->assertEquals('60,00 €', $invoice->subtotal());
+        $this->assertSame('60,00 €', $invoice->subtotal());
 
         $this->assertEquals(collect([
             [
@@ -61,7 +61,7 @@ class InvoiceTest extends BaseTestCase
             ],
         ]), $invoice->taxDetails());
 
-        $this->assertEquals('70,50 €', $invoice->total());
+        $this->assertSame('70,50 €', $invoice->total());
         $this->assertMoneyEURCents(7050, $invoice->rawTotal());
 
     }
@@ -81,7 +81,7 @@ class InvoiceTest extends BaseTestCase
             'john@example.com',
         ]), $invoice->receiverAddress());
 
-        $this->assertEquals('John Doe<br>john@example.com', $invoice->receiverAddress('<br>'));
+        $this->assertSame('John Doe<br>john@example.com', $invoice->receiverAddress('<br>'));
     }
 
     /** @test */
@@ -110,17 +110,17 @@ class InvoiceTest extends BaseTestCase
         ]);
 
         $this->assertEquals(collect(['This is some nice extra information']), $invoice->extraInformation());
-        $this->assertEquals('This is some nice extra information', $invoice->extraInformation(''));
+        $this->assertSame('This is some nice extra information', $invoice->extraInformation(''));
     }
 
     /** @test */
     public function canSetInvoiceId()
     {
         $invoice = new Invoice('EUR', '2018-1234567890');
-        $this->assertEquals('2018-1234567890', $invoice->id());
+        $this->assertSame('2018-1234567890', $invoice->id());
 
         $invoice = $invoice->setId('2018-0987654321');
-        $this->assertEquals('2018-0987654321', $invoice->id());
+        $this->assertSame('2018-0987654321', $invoice->id());
     }
 
     /** @test */
@@ -129,12 +129,12 @@ class InvoiceTest extends BaseTestCase
         $invoice = new Invoice('EUR');
         $this->assertFalse($invoice->hasStartingBalance());
         $this->assertMoneyEURCents(0, $invoice->rawStartingBalance());
-        $this->assertEquals('0,00 €', $invoice->startingBalance());
+        $this->assertSame('0,00 €', $invoice->startingBalance());
 
         $invoice = $invoice->setStartingBalance(money(1525, 'EUR'));
         $this->assertTrue($invoice->hasStartingBalance());
         $this->assertMoneyEURCents(1525, $invoice->rawStartingBalance());
-        $this->assertEquals('15,25 €', $invoice->startingBalance());
+        $this->assertSame('15,25 €', $invoice->startingBalance());
     }
 
     /** @test */
@@ -142,11 +142,11 @@ class InvoiceTest extends BaseTestCase
     {
         $invoice = new Invoice('EUR');
         $this->assertMoneyEURCents(0, $invoice->rawCompletedBalance());
-        $this->assertEquals('0,00 €', $invoice->completedBalance());
+        $this->assertSame('0,00 €', $invoice->completedBalance());
 
         $invoice = $invoice->setCompletedBalance(money(1525, 'EUR'));
         $this->assertMoneyEURCents(1525, $invoice->rawCompletedBalance());
-        $this->assertEquals('15,25 €', $invoice->completedBalance());
+        $this->assertSame('15,25 €', $invoice->completedBalance());
     }
 
     /** @test */
@@ -154,11 +154,11 @@ class InvoiceTest extends BaseTestCase
     {
         $invoice = new Invoice('EUR');
         $this->assertMoneyEURCents(0, $invoice->rawUsedBalance());
-        $this->assertEquals('0,00 €', $invoice->usedBalance());
+        $this->assertSame('0,00 €', $invoice->usedBalance());
 
         $invoice = $invoice->setUsedBalance(money(1525, 'EUR'));
         $this->assertMoneyEURCents(1525, $invoice->rawUsedBalance());
-        $this->assertEquals('15,25 €', $invoice->usedBalance());
+        $this->assertSame('15,25 €', $invoice->usedBalance());
     }
 
     /** @test */
@@ -206,7 +206,7 @@ class InvoiceTest extends BaseTestCase
 
         $response = $invoice->download();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertTrue($response->headers->contains('content-description', 'File Transfer'));
         $this->assertTrue($response->headers->contains('content-disposition', 'attachment; filename="TestNumber-123_foo_bar.pdf"'));
         $this->assertTrue($response->headers->contains('Content-Transfer-Encoding', 'binary'));

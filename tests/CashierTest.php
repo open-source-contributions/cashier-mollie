@@ -41,12 +41,12 @@ class CashierTest extends BaseTestCase
         $user->orderItems()->save(factory(OrderItem::class)->states('unlinked', 'processed')->make());
         $user->orderItems()->save(factory(OrderItem::class)->states('unlinked', 'unprocessed')->make());
 
-        $this->assertEquals(0, $user->orders()->count());
+        $this->assertSame(0, $user->orders()->count());
         $this->assertOrderItemCounts($user, 1, 1);
 
         Cashier::run();
 
-        $this->assertEquals(1, $user->orders()->count());
+        $this->assertSame(1, $user->orders()->count());
         $this->assertOrderItemCounts($user, 2, 0);
     }
 
@@ -87,14 +87,14 @@ class CashierTest extends BaseTestCase
             ])
         ); // should process this one
 
-        $this->assertEquals(0, Order::count());
+        $this->assertSame(0, Order::count());
         $this->assertOrderItemCounts($user1, 1, 3);
         $this->assertOrderItemCounts($user2, 0, 1);
 
         Cashier::run();
 
-        $this->assertEquals(1, $user1->orders()->count());
-        $this->assertEquals(1, $user2->orders()->count());
+        $this->assertSame(1, $user1->orders()->count());
+        $this->assertSame(1, $user2->orders()->count());
         $this->assertOrderItemCounts($user1, 3, 3); // processed 3, scheduled 3
         $this->assertOrderItemCounts($user2, 1, 1); // processed 1, scheduled 1
     }
@@ -112,7 +112,7 @@ class CashierTest extends BaseTestCase
         Cashier::run();
 
         $subscription = $subscription->fresh();
-        $this->assertEquals(1, $user->orders()->count());
+        $this->assertSame(1, $user->orders()->count());
         $this->assertOrderItemCounts($user, 1, 1);
         $processedOrderItem = $user->orderItems()->processed()->first();
         $scheduledOrderItem = $subscription->scheduledOrderItem;
@@ -121,10 +121,10 @@ class CashierTest extends BaseTestCase
         $this->withTestNow(now()->copy()->addWeeks(2));
         $subscription = $subscription->swap('monthly-10-1');
 
-        $this->assertEquals('monthly-10-1', $subscription->plan);
+        $this->assertSame('monthly-10-1', $subscription->plan);
 
         // Swapping results in a new Order being created
-        $this->assertEquals(2, $user->orders()->count());
+        $this->assertSame(2, $user->orders()->count());
 
         // Added one processed OrderItem for crediting surplus
         // Added one processed OrderItem for starting the new subscription cycle
@@ -141,7 +141,7 @@ class CashierTest extends BaseTestCase
         Cashier::run();
 
         // Assert that an Order for this month was created
-        $this->assertEquals(3, $user->orders()->count());
+        $this->assertSame(3, $user->orders()->count());
 
         // Processed one unprocessed OrderItem
         // Scheduled one unprocessed OrderItem for next billing cycle
@@ -151,8 +151,8 @@ class CashierTest extends BaseTestCase
     /** @test */
     public function testFormatAmount()
     {
-        $this->assertEquals('1.000,00 €', Cashier::formatAmount(money(100000, 'EUR')));
-        $this->assertEquals('-9.123,45 €', Cashier::formatAmount(money(-912345, 'EUR')));
+        $this->assertSame('1.000,00 €', Cashier::formatAmount(money(100000, 'EUR')));
+        $this->assertSame('-9.123,45 €', Cashier::formatAmount(money(-912345, 'EUR')));
     }
 
     /**
@@ -162,17 +162,17 @@ class CashierTest extends BaseTestCase
      */
     protected function assertOrderItemCounts(Model $user, int $processed, int $unprocessed)
     {
-        $this->assertEquals(
+        $this->assertSame(
             $processed,
             $user->orderItems()->processed()->count(),
             'Unexpected amount of processed orderItems.'
         );
-        $this->assertEquals(
+        $this->assertSame(
             $unprocessed,
             $user->orderItems()->unprocessed()->count(),
             'Unexpected amount of unprocessed orderItems.'
         );
-        $this->assertEquals(
+        $this->assertSame(
             $processed + $unprocessed,
             $user->orderItems()->count(),
             'Unexpected total amount of orderItems.'
@@ -182,50 +182,50 @@ class CashierTest extends BaseTestCase
     /** @test */
     public function canOverrideDefaultCurrencySymbol()
     {
-        $this->assertEquals('€', Cashier::usesCurrencySymbol());
-        $this->assertEquals('eur', Cashier::usesCurrency());
+        $this->assertSame('€', Cashier::usesCurrencySymbol());
+        $this->assertSame('eur', Cashier::usesCurrency());
 
         Cashier::useCurrency('usd');
 
-        $this->assertEquals('usd', Cashier::usesCurrency());
-        $this->assertEquals('$', Cashier::usesCurrencySymbol());
+        $this->assertSame('usd', Cashier::usesCurrency());
+        $this->assertSame('$', Cashier::usesCurrencySymbol());
     }
 
     /** @test */
     public function canOverrideDefaultCurrencyLocale()
     {
-        $this->assertEquals('de_DE', Cashier::usesCurrencyLocale());
+        $this->assertSame('de_DE', Cashier::usesCurrencyLocale());
 
         Cashier::useCurrencyLocale('nl_NL');
 
-        $this->assertEquals('nl_NL', Cashier::usesCurrencyLocale());
+        $this->assertSame('nl_NL', Cashier::usesCurrencyLocale());
     }
 
     /** @test */
     public function canOverrideFirstPaymentWebhookUrl()
     {
-        $this->assertEquals('mandate-webhook', Cashier::firstPaymentWebhookUrl());
+        $this->assertSame('mandate-webhook', Cashier::firstPaymentWebhookUrl());
 
         config(['cashier.first_payment.webhook_url' => 'https://www.example.com/webhook/mollie']);
 
-        $this->assertEquals('webhook/mollie', Cashier::firstPaymentWebhookUrl());
+        $this->assertSame('webhook/mollie', Cashier::firstPaymentWebhookUrl());
 
         config(['cashier.first_payment.webhook_url' => 'webhook/cashier']);
 
-        $this->assertEquals('webhook/cashier', Cashier::firstPaymentWebhookUrl());
+        $this->assertSame('webhook/cashier', Cashier::firstPaymentWebhookUrl());
     }
 
     /** @test */
     public function canOverrideWebhookUrl()
     {
-        $this->assertEquals('webhook', Cashier::webhookUrl());
+        $this->assertSame('webhook', Cashier::webhookUrl());
 
         config(['cashier.webhook_url' => 'https://www.example.com/webhook/mollie']);
 
-        $this->assertEquals('webhook/mollie', Cashier::webhookUrl());
+        $this->assertSame('webhook/mollie', Cashier::webhookUrl());
 
         config(['cashier.webhook_url' => 'webhook/cashier']);
 
-        $this->assertEquals('webhook/cashier', Cashier::webhookUrl());
+        $this->assertSame('webhook/cashier', Cashier::webhookUrl());
     }
 }

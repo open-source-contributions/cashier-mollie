@@ -28,23 +28,23 @@ class MandatedSubscriptionBuilderTest extends BaseTestCase
         $now = Carbon::parse('2019-01-01');
         $this->withTestNow($now);
 
-        $this->assertEquals(0, RedeemedCoupon::count());
-        $this->assertEquals(0, AppliedCoupon::count());
+        $this->assertSame(0, RedeemedCoupon::count());
+        $this->assertSame(0, AppliedCoupon::count());
 
         $builder = $this->getBuilder();
 
         $subscription = $builder->withCoupon('test-coupon')->create();
 
-        $this->assertEquals(1, $subscription->redeemedCoupons()->count());
+        $this->assertSame(1, $subscription->redeemedCoupons()->count());
 
         // Coupons will be applied when (pre)processing the Subscription OrderItems
-        $this->assertEquals(0, $subscription->appliedCoupons()->count());
+        $this->assertSame(0, $subscription->appliedCoupons()->count());
 
         $orderItem = $subscription->orderItems()->first();
         $this->assertCarbon($now, $orderItem->process_at);
-        $this->assertEquals('EUR', $orderItem->currency);
-        $this->assertEquals(1000, $orderItem->unit_price);
-        $this->assertEquals(1, $orderItem->quantity);
+        $this->assertSame('EUR', $orderItem->currency);
+        $this->assertSame(1000, $orderItem->unit_price);
+        $this->assertSame(1, $orderItem->quantity);
     }
 
     public function testWithCouponAndTrial()
@@ -53,8 +53,8 @@ class MandatedSubscriptionBuilderTest extends BaseTestCase
         $now = Carbon::parse('2019-01-01');
         $this->withTestNow($now);
 
-        $this->assertEquals(0, RedeemedCoupon::count());
-        $this->assertEquals(0, AppliedCoupon::count());
+        $this->assertSame(0, RedeemedCoupon::count());
+        $this->assertSame(0, AppliedCoupon::count());
 
         $builder = $this->getBuilder();
 
@@ -63,16 +63,16 @@ class MandatedSubscriptionBuilderTest extends BaseTestCase
             ->trialDays(5)
             ->create();
 
-        $this->assertEquals(1, $subscription->redeemedCoupons()->count());
+        $this->assertSame(1, $subscription->redeemedCoupons()->count());
 
         // Coupons will be applied when (pre)processing the Subscription OrderItems
-        $this->assertEquals(0, $subscription->appliedCoupons()->count());
+        $this->assertSame(0, $subscription->appliedCoupons()->count());
 
         $orderItem = $subscription->orderItems()->first();
         $this->assertCarbon($now->copy()->addDays(5), $orderItem->process_at);
-        $this->assertEquals('EUR', $orderItem->currency);
-        $this->assertEquals(1000, $orderItem->unit_price);
-        $this->assertEquals(1, $orderItem->quantity);
+        $this->assertSame('EUR', $orderItem->currency);
+        $this->assertSame(1000, $orderItem->unit_price);
+        $this->assertSame(1, $orderItem->quantity);
     }
 
     /** @test */

@@ -34,18 +34,18 @@ class FirstPaymentHandlerTest extends BaseTestCase
         $firstAction = $actions[0];
         $this->assertInstanceOf(AddBalance::class, $firstAction);
         $this->assertMoneyEURCents(500, $firstAction->getTotal());
-        $this->assertEquals('Test add balance 1', $firstAction->getDescription());
+        $this->assertSame('Test add balance 1', $firstAction->getDescription());
 
         $secondAction = $actions[1];
         $this->assertInstanceOf(AddBalance::class, $secondAction);
         $this->assertMoneyEURCents(500, $secondAction->getTotal());
-        $this->assertEquals('Test add balance 2', $secondAction->getDescription());
+        $this->assertSame('Test add balance 2', $secondAction->getDescription());
 
         $this->assertFalse($owner->hasCredit());
         $this->assertNull($owner->mollie_mandate_id);
 
-        $this->assertEquals(0, $owner->orderItems()->count());
-        $this->assertEquals(0, $owner->orders()->count());
+        $this->assertSame(0, $owner->orderItems()->count());
+        $this->assertSame(0, $owner->orders()->count());
 
         $order = $handler->execute();
 
@@ -55,13 +55,13 @@ class FirstPaymentHandlerTest extends BaseTestCase
         $credit = $owner->credit('EUR');
         $this->assertMoneyEURCents(1000,$credit->money());
 
-        $this->assertEquals(2, $owner->orderItems()->count());
-        $this->assertEquals(1, $owner->orders()->count());
+        $this->assertSame(2, $owner->orderItems()->count());
+        $this->assertSame(1, $owner->orders()->count());
 
         $this->assertInstanceOf(Order::Class, $order);
         $this->assertTrue($order->isProcessed());
 
-        $this->assertEquals(2, $order->items()->count());
+        $this->assertSame(2, $order->items()->count());
 
         $this->assertNotNull($owner->mollie_mandate_id);
         $this->assertEquals($payment->mandateId, $owner->mollie_mandate_id);

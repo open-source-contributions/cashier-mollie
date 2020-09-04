@@ -49,18 +49,18 @@ class OrderTest extends BaseTestCase
 
         $order = Order::createFromItems(OrderItem::all());
 
-        $this->assertEquals(2, $order->items()->count());
+        $this->assertSame(2, $order->items()->count());
 
-        $this->assertEquals(2, $order->owner_id);
-        $this->assertEquals(User::class, $order->owner_type);
-        $this->assertEquals('EUR', $order->currency);
-        $this->assertEquals(24690, $order->subtotal);
+        $this->assertSame(2, $order->owner_id);
+        $this->assertSame(User::class, $order->owner_type);
+        $this->assertSame('EUR', $order->currency);
+        $this->assertSame(24690, $order->subtotal);
         $this->assertMoneyEURCents(24690, $order->getSubtotal());
-        $this->assertEquals(5308, $order->tax);
+        $this->assertSame(5308, $order->tax);
         $this->assertMoneyEURCents(5308, $order->getTax());
-        $this->assertEquals(29998, $order->total);
+        $this->assertSame(29998, $order->total);
         $this->assertMoneyEURCents(29998, $order->getTotal());
-        $this->assertEquals('2018-0000-0001', $order->number);
+        $this->assertSame('2018-0000-0001', $order->number);
         $this->assertNull($order->mollie_payment_id);
 
         Event::assertDispatched(OrderCreated::class, function ($e) use ($order) {
@@ -72,7 +72,7 @@ class OrderTest extends BaseTestCase
         $this->assertDispatchedOrderProcessed($order);
 
         $this->assertNotNull($order->mollie_payment_id);
-        $this->assertEquals('open', $order->mollie_payment_status);
+        $this->assertSame('open', $order->mollie_payment_status);
     }
 
     /** @test */
@@ -88,16 +88,16 @@ class OrderTest extends BaseTestCase
 
         $subscription->scheduleNewOrderItemAt($subscription->cycle_ends_at);
 
-        $this->assertEquals(1, $subscription->orderItems()->count());
+        $this->assertSame(1, $subscription->orderItems()->count());
 
         $order = Order::createFromItems($subscription->orderItems);
 
         $subscription = $subscription->fresh();
 
-        $this->assertEquals(1, Order::count());
-        $this->assertEquals(1, $order->items()->count());
-        $this->assertEquals(2, $subscription->orderItems()->count());
-        $this->assertEquals(1, OrderItem::unprocessed()->count());
+        $this->assertSame(1, Order::count());
+        $this->assertSame(1, $order->items()->count());
+        $this->assertSame(2, $subscription->orderItems()->count());
+        $this->assertSame(1, OrderItem::unprocessed()->count());
 
         $scheduled_item = $subscription->scheduled_order_item;
 
@@ -155,27 +155,27 @@ class OrderTest extends BaseTestCase
         $this->assertSame("0", $order->balance_before);
 
 
-        $this->assertEquals(0, $order->balance_after);
+        $this->assertSame(0, $order->balance_after);
         $this->assertMoneyEURCents(0, $order->getBalanceAfter());
         $this->assertFalse($order->creditApplied());
 
-        $this->assertEquals(1500, $user->credit('EUR')->value);
+        $this->assertSame(1500, $user->credit('EUR')->value);
         $this->assertMoneyEURCents(1500, $user->credit('EUR')->money());
 
         $order = $order->processPayment();
 
         $this->assertTrue($order->creditApplied());
 
-        $this->assertEquals(1500, $order->balance_before);
+        $this->assertSame(1500, $order->balance_before);
         $this->assertMoneyEURCents(1500, $order->getBalanceBefore());
 
-        $this->assertEquals(1000, $order->credit_used);
+        $this->assertSame(1000, $order->credit_used);
         $this->assertMoneyEURCents(1000, $order->getCreditUsed());
 
-        $this->assertEquals(500, $order->balance_after);
+        $this->assertSame(500, $order->balance_after);
         $this->assertMoneyEURCents(500, $order->getBalanceAfter());
 
-        $this->assertEquals(500, $user->credit('EUR')->value);
+        $this->assertSame(500, $user->credit('EUR')->value);
         $this->assertMoneyEURCents(500, $user->credit('EUR')->money());
 
 
@@ -212,7 +212,7 @@ class OrderTest extends BaseTestCase
         $invoice = $order->invoice('2017-0000-0001', $date);
 
         $this->assertInstanceOf(Invoice::class, $invoice);
-        $this->assertEquals('2017-0000-0001', $invoice->id());
+        $this->assertSame('2017-0000-0001', $invoice->id());
         $this->assertEquals($date, $invoice->date());
         $this->assertCount(2, $invoice->items());
         $this->assertEquals(collect(['Some dummy', 'extra billing information']), $invoice->extraInformation());
@@ -266,15 +266,15 @@ class OrderTest extends BaseTestCase
 
         $this->assertTrue($order->isProcessed());
         $this->assertNotNull($order->mollie_payment_id);
-        $this->assertEquals('open', $order->mollie_payment_status);
+        $this->assertSame('open', $order->mollie_payment_status);
 
         $payment = mollie()->payments()->get($order->mollie_payment_id);
         $this->assertEquals($this->getMandatedCustomerId(), $payment->customerId);
-        $this->assertEquals("10.25", $payment->amount->value);
-        $this->assertEquals("EUR", $payment->amount->currency);
-        $this->assertEquals("directdebit", $payment->method);
-        $this->assertEquals("recurring", $payment->sequenceType);
-        $this->assertEquals('https://www.example.com/webhook', $payment->webhookUrl);
+        $this->assertSame("10.25", $payment->amount->value);
+        $this->assertSame("EUR", $payment->amount->currency);
+        $this->assertSame("directdebit", $payment->method);
+        $this->assertSame("recurring", $payment->sequenceType);
+        $this->assertSame('https://www.example.com/webhook', $payment->webhookUrl);
 
         $this->assertDispatchedOrderProcessed($order);
     }
@@ -309,7 +309,7 @@ class OrderTest extends BaseTestCase
         $this->assertTrue($order->isProcessed());
         $this->assertNull($order->mollie_payment_id);
         $this->assertTrue($user->hasCredit('EUR'));
-        $this->assertEquals(-25, $user->credit('EUR')->value);
+        $this->assertSame(-25, $user->credit('EUR')->value);
         $this->assertMoneyEURCents(-25, $user->credit('EUR')->money());
 
         Event::assertNotDispatched(BalanceTurnedStale::class);
@@ -334,7 +334,7 @@ class OrderTest extends BaseTestCase
         $this->assertFalse($order->isProcessed());
         $user->addCredit(money(1025, 'EUR'));
         $this->assertTrue($user->hasCredit('EUR'));
-        $this->assertEquals(1025, $user->credit('EUR')->value);
+        $this->assertSame(1025, $user->credit('EUR')->value);
         $this->assertMoneyEURCents(1025, $user->credit('EUR')->money());
         $this->assertTrue($subscription->active());
 
@@ -343,7 +343,7 @@ class OrderTest extends BaseTestCase
         $this->assertTrue($order->isProcessed());
         $this->assertNull($order->mollie_payment_id);
         $this->assertTrue($user->hasCredit('EUR'));
-        $this->assertEquals(2050, $user->credit('EUR')->value);
+        $this->assertSame(2050, $user->credit('EUR')->value);
         $this->assertMoneyEURCents(2050, $user->credit('EUR')->money());
 
         Event::assertNotDispatched(BalanceTurnedStale::class);
@@ -372,7 +372,7 @@ class OrderTest extends BaseTestCase
         $this->assertNull($order->mollie_payment_id);
         $this->assertTrue($user->hasCredit('EUR'));
         $credit = $user->credit('EUR');
-        $this->assertEquals(1, $credit->value);
+        $this->assertSame(1, $credit->value);
         $this->assertMoneyEURCents(1, $credit->money());
 
 
@@ -406,18 +406,18 @@ class OrderTest extends BaseTestCase
 
         $order = Order::createFromItems(OrderItem::all());
 
-        $this->assertEquals(2, $order->items()->count());
+        $this->assertSame(2, $order->items()->count());
 
         $this->assertEquals($user->id, $order->owner_id);
-        $this->assertEquals(User::class, $order->owner_type);
-        $this->assertEquals('EUR', $order->currency);
-        $this->assertEquals(-24690, $order->subtotal);
+        $this->assertSame(User::class, $order->owner_type);
+        $this->assertSame('EUR', $order->currency);
+        $this->assertSame(-24690, $order->subtotal);
         $this->assertMoneyEURCents(-24690, $order->getSubtotal());
-        $this->assertEquals(-5308, $order->tax);
+        $this->assertSame(-5308, $order->tax);
         $this->assertMoneyEURCents(-5308, $order->getTax());
-        $this->assertEquals(-29998, $order->total);
+        $this->assertSame(-29998, $order->total);
         $this->assertMoneyEURCents(-29998, $order->getTotal());
-        $this->assertEquals('2018-0000-0001', $order->number);
+        $this->assertSame('2018-0000-0001', $order->number);
         $this->assertNull($order->mollie_payment_id);
 
         Event::assertDispatched(OrderCreated::class, function ($e) use ($order) {
@@ -458,20 +458,20 @@ class OrderTest extends BaseTestCase
 
         $order = Order::createFromItems(OrderItem::all());
 
-        $this->assertEquals(2, $order->items()->count());
+        $this->assertSame(2, $order->items()->count());
 
         $this->assertEquals($user->id, $order->owner_id);
-        $this->assertEquals(User::class, $order->owner_type);
-        $this->assertEquals('EUR', $order->currency);
-        $this->assertEquals(24690, $order->subtotal);
+        $this->assertSame(User::class, $order->owner_type);
+        $this->assertSame('EUR', $order->currency);
+        $this->assertSame(24690, $order->subtotal);
         $this->assertMoneyEURCents(24690, $order->getSubtotal());
-        $this->assertEquals(5308, $order->tax);
+        $this->assertSame(5308, $order->tax);
         $this->assertMoneyEURCents(5308, $order->getTax());
-        $this->assertEquals(29998, $order->total);
+        $this->assertSame(29998, $order->total);
         $this->assertMoneyEURCents(29998, $order->getTotal());
-        $this->assertEquals(0, $order->total_due);
+        $this->assertSame(0, $order->total_due);
         $this->assertMoneyEURCents(0, $order->getTotalDue());
-        $this->assertEquals('2018-0000-0001', $order->number);
+        $this->assertSame('2018-0000-0001', $order->number);
         $this->assertNull($order->mollie_payment_id);
 
         Event::assertDispatched(OrderCreated::class, function ($e) use ($order) {
@@ -516,8 +516,8 @@ class OrderTest extends BaseTestCase
 
         $this->assertTrue($order->isProcessed());
 
-        $this->assertEquals('tr_123456', $order->mollie_payment_id);
-        $this->assertEquals(PaymentStatus::STATUS_PAID, $order->mollie_payment_status);
+        $this->assertSame('tr_123456', $order->mollie_payment_id);
+        $this->assertSame(PaymentStatus::STATUS_PAID, $order->mollie_payment_status);
 
         $items->each(function ($item) {
             $this->assertTrue($item->isProcessed());

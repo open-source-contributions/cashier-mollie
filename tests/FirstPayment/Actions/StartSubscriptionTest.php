@@ -297,16 +297,16 @@ class StartSubscriptionTest extends BaseTestCase
         $this->assertInstanceOf(OrderItem::class, $item);
         $this->assertFalse($item->isProcessed());
         $this->assertCarbon(now(), $item->process_at);
-        $this->assertEquals(1000, $item->total);
+        $this->assertSame(1000, $item->total);
 
         $subscription = $user->subscription('default');
-        $this->assertEquals(2, $subscription->orderItems()->count());
+        $this->assertSame(2, $subscription->orderItems()->count());
         $this->assertCarbon(now(), $subscription->cycle_started_at);
         $this->assertCarbon(now()->addMonth(), $subscription->cycle_ends_at);
 
         $scheduledItem = $subscription->orderItems()->orderByDesc('process_at')->first();
         $this->assertCarbon(now()->addMonth(), $scheduledItem->process_at);
-        $this->assertEquals(1000, $scheduledItem->total);
+        $this->assertSame(1000, $scheduledItem->total);
     }
 
     /** @test */
@@ -338,11 +338,11 @@ class StartSubscriptionTest extends BaseTestCase
         $this->assertInstanceOf(OrderItem::class, $item);
         $this->assertFalse($item->isProcessed());
         $this->assertCarbon(now(), $item->process_at);
-        $this->assertEquals(0, $item->total);
-        $this->assertEquals(20, $item->tax_percentage);
+        $this->assertSame(0, $item->total);
+        $this->assertSame(20, $item->tax_percentage);
 
         $subscription = $user->subscription('default');
-        $this->assertEquals(2, $subscription->orderItems()->count());
+        $this->assertSame(2, $subscription->orderItems()->count());
         $this->assertCarbon(now(), $subscription->cycle_started_at);
         $this->assertCarbon(now()->addDays(5), $subscription->cycle_ends_at);
 
@@ -353,9 +353,9 @@ class StartSubscriptionTest extends BaseTestCase
             now()->addDays(5),
             $user->subscriptions()->first()->trial_ends_at
         );
-        $this->assertEquals(1000, $scheduledItem->subtotal);
-        $this->assertEquals(1200, $scheduledItem->total);
-        $this->assertEquals(20, $scheduledItem->tax_percentage);
+        $this->assertSame(1000, $scheduledItem->subtotal);
+        $this->assertSame(1200, $scheduledItem->total);
+        $this->assertSame(20, $scheduledItem->tax_percentage);
     }
 
     /** @test */
@@ -386,10 +386,10 @@ class StartSubscriptionTest extends BaseTestCase
         $this->assertInstanceOf(OrderItem::class, $item);
         $this->assertFalse($item->isProcessed());
         $this->assertCarbon(now(), $item->process_at);
-        $this->assertEquals(0, $item->total);
+        $this->assertSame(0, $item->total);
 
         $subscription = $user->subscription('default');
-        $this->assertEquals(2, $subscription->orderItems()->count());
+        $this->assertSame(2, $subscription->orderItems()->count());
         $this->assertCarbon(now(), $subscription->cycle_started_at);
         $this->assertCarbon(now()->addDays(5), $subscription->cycle_ends_at);
 
@@ -400,7 +400,7 @@ class StartSubscriptionTest extends BaseTestCase
             now()->addDays(5),
             $user->subscriptions()->first()->trial_ends_at
         );
-        $this->assertEquals(1000, $scheduledItem->total);
+        $this->assertSame(1000, $scheduledItem->total);
     }
 
     /** @test */
@@ -431,22 +431,22 @@ class StartSubscriptionTest extends BaseTestCase
         $this->assertInstanceOf(OrderItem::class, $item);
         $this->assertFalse($item->isProcessed());
         $this->assertCarbon(now(), $item->process_at);
-        $this->assertEquals(1000, $item->unit_price);
-        $this->assertEquals(5, $item->quantity);
-        $this->assertEquals(5000, $item->total);
+        $this->assertSame(1000, $item->unit_price);
+        $this->assertSame(5, $item->quantity);
+        $this->assertSame(5000, $item->total);
 
         $subscription = $user->subscription('default');
-        $this->assertEquals(5, $subscription->quantity);
-        $this->assertEquals(2, $subscription->orderItems()->count());
+        $this->assertSame(5, $subscription->quantity);
+        $this->assertSame(2, $subscription->orderItems()->count());
         $this->assertCarbon(now(), $subscription->cycle_started_at);
         $this->assertCarbon(now()->addMonth(), $subscription->cycle_ends_at);
 
         $scheduledItem = $subscription->orderItems()->orderByDesc('process_at')->first();
         $this->assertCarbon(now()->addMonth(), $scheduledItem->process_at);
-        $this->assertEquals(5, $scheduledItem->quantity);
-        $this->assertEquals(1000, $scheduledItem->unit_price);
-        $this->assertEquals(5, $scheduledItem->quantity);
-        $this->assertEquals(5 * 1000, $scheduledItem->total);
+        $this->assertSame(5, $scheduledItem->quantity);
+        $this->assertSame(1000, $scheduledItem->unit_price);
+        $this->assertSame(5, $scheduledItem->quantity);
+        $this->assertSame(5 * 1000, $scheduledItem->total);
     }
 
     /** @test */
@@ -477,24 +477,24 @@ class StartSubscriptionTest extends BaseTestCase
         $this->assertInstanceOf(OrderItem::class, $item);
         $this->assertFalse($item->isProcessed());
         $this->assertCarbon(now(), $item->process_at);
-        $this->assertEquals(0, $item->total);
-        $this->assertEquals(5, $item->quantity);
+        $this->assertSame(0, $item->total);
+        $this->assertSame(5, $item->quantity);
 
         $subscription = $user->subscription('default');
-        $this->assertEquals(5, $subscription->quantity);
-        $this->assertEquals(2, $subscription->orderItems()->count());
+        $this->assertSame(5, $subscription->quantity);
+        $this->assertSame(2, $subscription->orderItems()->count());
         $this->assertCarbon(now(), $subscription->cycle_started_at);
         $this->assertCarbon(now()->addDays(5), $subscription->cycle_ends_at);
 
         $scheduledItem = $subscription->orderItems()->orderByDesc('process_at')->first();
         $this->assertCarbon(now()->addDays(5), $scheduledItem->process_at);
-        $this->assertEquals(5, $scheduledItem->quantity);
+        $this->assertSame(5, $scheduledItem->quantity);
 
         $this->assertCarbon(
             now()->addDays(5),
             $user->subscriptions()->first()->trial_ends_at
         );
-        $this->assertEquals(5 * 1000, $scheduledItem->total);
+        $this->assertSame(5 * 1000, $scheduledItem->total);
     }
 
     /** @test */
@@ -511,8 +511,8 @@ class StartSubscriptionTest extends BaseTestCase
             'coupon' => 'test-coupon',
         ], $user);
 
-        $this->assertEquals(0, RedeemedCoupon::count());
-        $this->assertEquals(0, AppliedCoupon::count());
+        $this->assertSame(0, RedeemedCoupon::count());
+        $this->assertSame(0, AppliedCoupon::count());
 
         // Returns the OrderItem ready for processing right away.
         // Behind the scenes another OrderItem is scheduled for the next billing cycle.
@@ -532,20 +532,20 @@ class StartSubscriptionTest extends BaseTestCase
         $this->assertMoneyEURCents(1000, $subscriptionItem->getTotal());
 
         $subscription = $user->subscription('default');
-        $this->assertEquals(1, $subscription->redeemedCoupons()->count());
-        $this->assertEquals('test-coupon', $subscription->redeemedCoupons()->first()->name);
-        $this->assertEquals(1, $subscription->appliedCoupons()->count());
-        $this->assertEquals(2, $subscription->orderItems()->count());
+        $this->assertSame(1, $subscription->redeemedCoupons()->count());
+        $this->assertSame('test-coupon', $subscription->redeemedCoupons()->first()->name);
+        $this->assertSame(1, $subscription->appliedCoupons()->count());
+        $this->assertSame(2, $subscription->orderItems()->count());
         $this->assertCarbon(now(), $subscription->cycle_started_at);
         $this->assertCarbon(now()->addMonth(), $subscription->cycle_ends_at);
 
         $scheduledItem = $subscription->orderItems()->orderByDesc('process_at')->first();
         $this->assertCarbon(now()->addMonth(), $scheduledItem->process_at);
-        $this->assertEquals(1000, $scheduledItem->total);
+        $this->assertSame(1000, $scheduledItem->total);
 
         $couponItem = $subscription->appliedCoupons()->first()->orderItems()->first();
         $this->assertTrue($couponItem->is($actionResult[1]));
-        $this->assertEquals(-500, $couponItem->total);
+        $this->assertSame(-500, $couponItem->total);
     }
 
     /** @test */
@@ -578,17 +578,17 @@ class StartSubscriptionTest extends BaseTestCase
         $this->assertInstanceOf(OrderItem::class, $item);
         $this->assertFalse($item->isProcessed());
         $this->assertCarbon(now(), $item->process_at);
-        $this->assertEquals(0, $item->total);
-        $this->assertEquals(20, $item->tax_percentage);
+        $this->assertSame(0, $item->total);
+        $this->assertSame(20, $item->tax_percentage);
 
         $subscription = $user->subscription('default');
-        $this->assertEquals(2, $subscription->orderItems()->count());
+        $this->assertSame(2, $subscription->orderItems()->count());
         $this->assertCarbon(now(), $subscription->cycle_started_at);
         $this->assertCarbon(now()->addDays(5), $subscription->cycle_ends_at);
 
-        $this->assertEquals(1, $subscription->redeemedCoupons()->count());
-        $this->assertEquals(0, $subscription->appliedCoupons()->count());
-        $this->assertEquals('test-coupon', $subscription->redeemedCoupons()->first()->name);
+        $this->assertSame(1, $subscription->redeemedCoupons()->count());
+        $this->assertSame(0, $subscription->appliedCoupons()->count());
+        $this->assertSame('test-coupon', $subscription->redeemedCoupons()->first()->name);
 
         $scheduledItem = $subscription->orderItems()->orderByDesc('process_at')->first();
         $this->assertCarbon(now()->addDays(5), $scheduledItem->process_at);
@@ -597,9 +597,9 @@ class StartSubscriptionTest extends BaseTestCase
             now()->addDays(5),
             $user->subscriptions()->first()->trial_ends_at
         );
-        $this->assertEquals(1000, $scheduledItem->subtotal);
-        $this->assertEquals(1200, $scheduledItem->total);
-        $this->assertEquals(20, $scheduledItem->tax_percentage);
+        $this->assertSame(1000, $scheduledItem->subtotal);
+        $this->assertSame(1200, $scheduledItem->total);
+        $this->assertSame(20, $scheduledItem->tax_percentage);
     }
 
     /**

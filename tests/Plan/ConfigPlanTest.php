@@ -48,11 +48,11 @@ class ConfigPlanTest extends BaseTestCase
     public function createFromConfigArrays()
     {
         $this->assertMoneyEURCents(1000, $this->plan->amount());
-        $this->assertEquals('1 month', $this->plan->interval());
-        $this->assertEquals('directdebit', $this->plan->firstPaymentMethod());
-        $this->assertEquals('Test subscription (monthly)', $this->plan->description());
+        $this->assertSame('1 month', $this->plan->interval());
+        $this->assertSame('directdebit', $this->plan->firstPaymentMethod());
+        $this->assertSame('Test subscription (monthly)', $this->plan->description());
         $this->assertMoneyEURCents(5, $this->plan->firstPaymentAmount());
-        $this->assertEquals('Test mandate payment', $this->plan->firstPaymentDescription());
+        $this->assertSame('Test mandate payment', $this->plan->firstPaymentDescription());
         $this->assertCount(1, $this->plan->orderItemPreprocessors());
     }
 
@@ -66,7 +66,7 @@ class ConfigPlanTest extends BaseTestCase
     /** @test */
     public function getFirstPaymentDescription()
     {
-        $this->assertEquals('Test mandate payment', $this->plan->firstPaymentDescription());
+        $this->assertSame('Test mandate payment', $this->plan->firstPaymentDescription());
     }
 
     /** @test */

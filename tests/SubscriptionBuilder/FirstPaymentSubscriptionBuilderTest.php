@@ -118,7 +118,7 @@ class FirstPaymentSubscriptionBuilderTest extends BaseTestCase
 
         $payload = $builder->getMandatePaymentBuilder()->getMolliePayload();
 
-        $this->assertEquals(3, $payload['metadata']['actions'][0]['quantity']);
+        $this->assertSame(3, $payload['metadata']['actions'][0]['quantity']);
         $this->assertEquals([
             'currency' => 'EUR',
             'value' => 36,
@@ -183,8 +183,8 @@ class FirstPaymentSubscriptionBuilderTest extends BaseTestCase
 
         $amount = $builder->getMandatePaymentBuilder()->getMolliePayload()['amount'];
 
-        $this->assertEquals('7.00', $amount['value']);
-        $this->assertEquals('EUR', $amount['currency']);
+        $this->assertSame('7.00', $amount['value']);
+        $this->assertSame('EUR', $amount['currency']);
     }
 
     /** @test */
@@ -193,14 +193,14 @@ class FirstPaymentSubscriptionBuilderTest extends BaseTestCase
         $trialBuilder = $this->getBuilder();
 
         $trialBuilder->trialDays(5)->create();
-        $this->assertEquals(
+        $this->assertSame(
             '0.05',
             $trialBuilder->getMandatePaymentBuilder()->getMolliePayload()['amount']['value']
         );
 
         $skipTrialBuilder = $this->getBuilder()->trialDays(5)->skipTrial();
         $skipTrialBuilder->create();
-        $this->assertEquals(
+        $this->assertSame(
             '12.00',
             $skipTrialBuilder->getMandatePaymentBuilder()->getMolliePayload()['amount']['value']
         );

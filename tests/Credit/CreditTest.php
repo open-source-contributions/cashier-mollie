@@ -20,13 +20,13 @@ class CreditTest extends BaseTestCase
         Credit::addAmountForOwner($user, Money::USD(12348));
 
         $creditEUR = $user->credit('EUR');
-        $this->assertEquals(24691, $creditEUR->value);
-        $this->assertEquals('EUR', $creditEUR->currency);
+        $this->assertSame(24691, $creditEUR->value);
+        $this->assertSame('EUR', $creditEUR->currency);
         $this->assertTrue(Money::EUR(24691)->equals($creditEUR->money()));
 
         $creditUSD = $user->credit('USD');
-        $this->assertEquals(12348, $creditUSD->value);
-        $this->assertEquals('USD', $creditUSD->currency);
+        $this->assertSame(12348, $creditUSD->value);
+        $this->assertSame('USD', $creditUSD->currency);
         $this->assertTrue(Money::USD(12348)->equals($creditUSD->money()));
     }
 
@@ -40,12 +40,12 @@ class CreditTest extends BaseTestCase
         $usedUSD = Credit::maxOutForOwner($user, Money::USD(20025));
 
         $this->assertEquals(Money::USD(12348), $usedUSD);
-        $this->assertEquals(0, Credit::whereOwner($user)->whereCurrency('USD')->first()->value);
+        $this->assertSame(0, Credit::whereOwner($user)->whereCurrency('USD')->first()->value);
 
         Credit::addAmountForOwner($user, Money::EUR(12346));
         $usedEUR = Credit::maxOutForOwner($user, Money::EUR(510));
 
         $this->assertTrue(Money::EUR(510)->equals($usedEUR));
-        $this->assertEquals(11836, Credit::whereOwner($user)->whereCurrency('EUR')->first()->value);
+        $this->assertSame(11836, Credit::whereOwner($user)->whereCurrency('EUR')->first()->value);
     }
 }

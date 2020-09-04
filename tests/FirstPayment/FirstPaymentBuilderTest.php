@@ -22,8 +22,8 @@ class FirstPaymentBuilderTest extends BaseTestCase
     public function canBuildPayload()
     {
         $owner = factory(User::class)->create();
-        $this->assertEquals(0, $owner->orderItems()->count());
-        $this->assertEquals(0, $owner->orders()->count());
+        $this->assertSame(0, $owner->orderItems()->count());
+        $this->assertSame(0, $owner->orders()->count());
 
         $builder = new FirstPaymentBuilder($owner, [
             'description' => 'Test mandate payment',
@@ -87,16 +87,16 @@ class FirstPaymentBuilderTest extends BaseTestCase
 
 
         $this->assertNotEmpty($customerId);
-        $this->assertEquals(0, $owner->orderItems()->count());
-        $this->assertEquals(0, $owner->orders()->count());
+        $this->assertSame(0, $owner->orderItems()->count());
+        $this->assertSame(0, $owner->orders()->count());
     }
 
     /** @test */
     public function createsMolliePayment()
     {
         $owner = factory(User::class)->create();
-        $this->assertEquals(0, $owner->orderItems()->count());
-        $this->assertEquals(0, $owner->orders()->count());
+        $this->assertSame(0, $owner->orderItems()->count());
+        $this->assertSame(0, $owner->orders()->count());
 
         $builder = new FirstPaymentBuilder($owner, [
             'description' => 'Test mandate payment',
@@ -118,8 +118,8 @@ class FirstPaymentBuilderTest extends BaseTestCase
 
         $payment = $builder->create();
 
-        $this->assertEquals(0, $owner->orderItems()->count());
-        $this->assertEquals(0, $owner->orders()->count());
+        $this->assertSame(0, $owner->orderItems()->count());
+        $this->assertSame(0, $owner->orders()->count());
 
         $this->assertInstanceOf(Payment::class, $payment);
 

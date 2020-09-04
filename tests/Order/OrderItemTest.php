@@ -17,8 +17,8 @@ class OrderItemTest extends BaseTestCase
         $item->tax_percentage = 21.50; // should be excluded from calculation
 
         // 440 = (4 * 110 - 200)
-        $this->assertEquals(440, $item->getSubtotalAttribute());
-        $this->assertEquals(440, $item->subtotal);
+        $this->assertSame(440, $item->getSubtotalAttribute());
+        $this->assertSame(440, $item->subtotal);
         $this->assertMoneyEURCents(440, $item->getSubtotal());
     }
 
@@ -31,8 +31,8 @@ class OrderItemTest extends BaseTestCase
         $item->tax_percentage = 21.5;
 
         // 94.6 = (4 * 110) * (21.5 / 100)
-        $this->assertEquals(95, $item->getTaxAttribute());
-        $this->assertEquals(95, $item->tax);
+        $this->assertSame(95, $item->getTaxAttribute());
+        $this->assertSame(95, $item->tax);
         $this->assertMoneyEURCents(95, $item->getTax());
     }
 
@@ -45,8 +45,8 @@ class OrderItemTest extends BaseTestCase
         $item->tax_percentage = 21.5;
 
         // 534.6 = 4 * 110 + (4 * 110) * (21.5 / 100)
-        $this->assertEquals(535, $item->getTotalAttribute());
-        $this->assertEquals(535, $item->total);
+        $this->assertSame(535, $item->getTotalAttribute());
+        $this->assertSame(535, $item->total);
         $this->assertMoneyEURCents(535, $item->getTotal());
     }
 
@@ -74,9 +74,9 @@ class OrderItemTest extends BaseTestCase
             'order_id' => 1,
         ]);
 
-        $this->assertEquals(2, OrderItem::processed()->count());
-        $this->assertEquals(2, OrderItem::processed(true)->count());
-        $this->assertEquals(3, OrderItem::processed(false)->count());
+        $this->assertSame(2, OrderItem::processed()->count());
+        $this->assertSame(2, OrderItem::processed(true)->count());
+        $this->assertSame(3, OrderItem::processed(false)->count());
     }
 
     public function testScopeUnprocessed()
@@ -90,9 +90,9 @@ class OrderItemTest extends BaseTestCase
             'order_id' => 1,
         ]);
 
-        $this->assertEquals(3, OrderItem::unprocessed()->count());
-        $this->assertEquals(3, OrderItem::unprocessed(true)->count());
-        $this->assertEquals(2, OrderItem::unprocessed(false)->count());
+        $this->assertSame(3, OrderItem::unprocessed()->count());
+        $this->assertSame(3, OrderItem::unprocessed(true)->count());
+        $this->assertSame(2, OrderItem::unprocessed(false)->count());
     }
 
     public function testScopeShouldProcess()
@@ -112,7 +112,7 @@ class OrderItemTest extends BaseTestCase
             'process_at' => now()->subHour(),
         ]);
 
-        $this->assertEquals(3, OrderItem::shouldProcess()->count());
+        $this->assertSame(3, OrderItem::shouldProcess()->count());
     }
 
     public function testScopeDue()
@@ -126,7 +126,7 @@ class OrderItemTest extends BaseTestCase
             'process_at' => now()->addMinutes(5),
         ]);
 
-        $this->assertEquals(2, OrderItem::due()->count());
+        $this->assertSame(2, OrderItem::due()->count());
     }
 
     public function testNewCollection()

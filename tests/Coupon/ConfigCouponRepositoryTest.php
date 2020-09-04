@@ -86,7 +86,7 @@ class ConfigCouponRepositoryTest extends BaseTestCase
     {
         $coupon = $this->repository->findOrFail('test-coupon');
 
-        $this->assertEquals(6, $coupon->times());
+        $this->assertSame(6, $coupon->times());
     }
 
 }

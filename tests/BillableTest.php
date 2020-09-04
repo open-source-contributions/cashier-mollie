@@ -20,7 +20,7 @@ class BillableTest extends BaseTestCase
             'tax_percentage' => 21.5,
         ]);
 
-        $this->assertEquals(21.5, $user->taxPercentage());
+        $this->assertSame(21.5, $user->taxPercentage());
     }
 
     /** @test */
@@ -81,14 +81,14 @@ class BillableTest extends BaseTestCase
 
         $user = $this->getMandatedUser();
         $subscription = $user->newSubscription('default', 'monthly-10-1')->create();
-        $this->assertEquals(0, $user->redeemedCoupons()->count());
+        $this->assertSame(0, $user->redeemedCoupons()->count());
 
         $user = $user->redeemCoupon('test-coupon', 'default', false);
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals(1, $user->redeemedCoupons()->count());
-        $this->assertEquals(1, $subscription->redeemedCoupons()->count());
-        $this->assertEquals(0, $subscription->appliedCoupons()->count());
+        $this->assertSame(1, $user->redeemedCoupons()->count());
+        $this->assertSame(1, $subscription->redeemedCoupons()->count());
+        $this->assertSame(0, $subscription->appliedCoupons()->count());
     }
 
     /** @test */
@@ -101,15 +101,15 @@ class BillableTest extends BaseTestCase
         $user = $this->getMandatedUser();
         $subscription = $user->newSubscription('default', 'monthly-10-1')->create();
         $subscription->redeemedCoupons()->saveMany(factory(RedeemedCoupon::class, 2)->make());
-        $this->assertEquals(2, $subscription->redeemedCoupons()->active()->count());
-        $this->assertEquals(0, $subscription->appliedCoupons()->count());
+        $this->assertSame(2, $subscription->redeemedCoupons()->active()->count());
+        $this->assertSame(0, $subscription->appliedCoupons()->count());
 
         $user = $user->redeemCoupon('test-coupon', 'default', true);
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals(1, $user->redeemedCoupons()->active()->count());
-        $this->assertEquals(1, $subscription->redeemedCoupons()->active()->count());
-        $this->assertEquals(0, $subscription->appliedCoupons()->count());
+        $this->assertSame(1, $user->redeemedCoupons()->active()->count());
+        $this->assertSame(1, $subscription->redeemedCoupons()->active()->count());
+        $this->assertSame(0, $subscription->appliedCoupons()->count());
     }
 
     /** @test */
@@ -118,13 +118,13 @@ class BillableTest extends BaseTestCase
         Event::fake();
         $this->withPackageMigrations();
         $user = $this->getUser(true, ['mollie_mandate_id' => 'foo-bar']);
-        $this->assertEquals('foo-bar', $user->mollieMandateId());
+        $this->assertSame('foo-bar', $user->mollieMandateId());
 
         $user->clearMollieMandate();
 
         $this->assertNull($user->mollieMandateId());
         Event::assertDispatched(MandateClearedFromBillable::class, function ($e) use ($user) {
-            $this->assertEquals('foo-bar', $e->oldMandateId);
+            $this->assertSame('foo-bar', $e->oldMandateId);
             $this->assertTrue($e->owner->is($user));
 
             return true;

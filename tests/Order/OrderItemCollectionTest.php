@@ -68,12 +68,12 @@ class OrderItemCollectionTest extends BaseTestCase
         $owner_2_group = $collection->whereOwner($owner_2);
 
         $this->assertInstanceOf(OrderItemCollection::class, $owner_1_group);
-        $this->assertEquals(1, $owner_1_group->count());
+        $this->assertSame(1, $owner_1_group->count());
         $this->assertEquals($item1, $owner_1_group->get(0));
         $this->assertTrue($owner_1_group->contains($item1));
 
         $this->assertInstanceOf(OrderItemCollection::class, $owner_2_group);
-        $this->assertEquals(2, $owner_2_group->count());
+        $this->assertSame(2, $owner_2_group->count());
         $this->assertTrue($owner_2_group->contains($item2));
         $this->assertTrue($owner_2_group->contains($item3));
     }
@@ -91,12 +91,12 @@ class OrderItemCollectionTest extends BaseTestCase
         $usd_group = $collection->whereCurrency('USD');
 
         $this->assertInstanceOf(OrderItemCollection::class, $eur_group);
-        $this->assertEquals(1, $eur_group->count());
+        $this->assertSame(1, $eur_group->count());
         $this->assertEquals($item1, $eur_group->get(0));
         $this->assertTrue($eur_group->contains($item1));
 
         $this->assertInstanceOf(OrderItemCollection::class, $usd_group);
-        $this->assertEquals(2, $usd_group->count());
+        $this->assertSame(2, $usd_group->count());
         $this->assertTrue($usd_group->contains($item2));
         $this->assertTrue($usd_group->contains($item3));
     }
@@ -127,7 +127,7 @@ class OrderItemCollectionTest extends BaseTestCase
         $result = $collection->chunkByOwner();
 
         $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals(2, $result->count());
+        $this->assertSame(2, $result->count());
 
         $this->assertEquals([
             'Laravel\Cashier\Tests\Fixtures\User_1',
@@ -151,7 +151,7 @@ class OrderItemCollectionTest extends BaseTestCase
         $result = $collection->chunkByCurrency();
 
         $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals(2, $result->count());
+        $this->assertSame(2, $result->count());
 
         $this->assertEquals(['EUR', 'USD'], $result->keys()->all());
     }
@@ -182,7 +182,7 @@ class OrderItemCollectionTest extends BaseTestCase
         $result = $collection->chunkByOwnerAndCurrency();
 
         $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals(3, $result->count());
+        $this->assertSame(3, $result->count());
 
         $this->assertEquals([
             'Laravel\Cashier\Tests\Fixtures\User_1_USD',

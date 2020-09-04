@@ -294,8 +294,8 @@ abstract class BaseTestCase extends TestCase
      */
     protected function assertMoney(int $value, string $currency, Money $money)
     {
-        $this->assertEquals($currency, $money->getCurrency()->getCode());
-        $this->assertEquals($money->getAmount(), $value);
+        $this->assertSame($currency, $money->getCurrency()->getCode());
+        $this->assertSame($money->getAmount(), $value);
         $this->assertTrue(money($value, $currency)->equals($money));
     }
 

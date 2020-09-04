@@ -50,7 +50,7 @@ class AddGenericOrderItemTest extends BaseTestCase
         $this->assertMoneyEURCents(5, $action->getSubtotal());
         $this->assertMoneyEURCents(6, $action->getTotal());
         $this->assertMoneyEURCents(1, $action->getTax());
-        $this->assertEquals(20, $action->getTaxPercentage());
+        $this->assertSame(20, $action->getTaxPercentage());
     }
 
     /** @test */
@@ -68,7 +68,7 @@ class AddGenericOrderItemTest extends BaseTestCase
         $this->assertMoneyEURCents(5, $action->getSubtotal());
         $this->assertMoneyEURCents(5, $action->getTotal());
         $this->assertMoneyEURCents(0, $action->getTax());
-        $this->assertEquals(0, $action->getTaxPercentage());
+        $this->assertSame(0, $action->getTaxPercentage());
     }
 
     /** @test */
@@ -90,11 +90,11 @@ class AddGenericOrderItemTest extends BaseTestCase
         $this->assertInstanceOf(OrderItemCollection::class, $items);
         $this->assertCount(1, $items);
         $this->assertInstanceOf(OrderItem::class, $item);
-        $this->assertEquals('Adding a test order item', $item->description);
-        $this->assertEquals('EUR', $item->currency);
-        $this->assertEquals(5, $item->unit_price);
-        $this->assertEquals(1, $item->quantity);
-        $this->assertEquals(20, $item->tax_percentage);
+        $this->assertSame('Adding a test order item', $item->description);
+        $this->assertSame('EUR', $item->currency);
+        $this->assertSame(5, $item->unit_price);
+        $this->assertSame(1, $item->quantity);
+        $this->assertSame(20, $item->tax_percentage);
         $this->assertNotNull($item->id); // item is persisted
         $this->assertFalse($item->isProcessed());
     }

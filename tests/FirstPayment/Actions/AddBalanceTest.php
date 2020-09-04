@@ -50,7 +50,7 @@ class AddBalanceTest extends BaseTestCase
         $this->assertMoneyEURCents(1000, $action->getTotal());
         $this->assertMoneyEURCents(1000, $action->getSubtotal());
         $this->assertMoneyEURCents(0, $action->getTax());
-        $this->assertEquals(0, $action->getTaxPercentage());
+        $this->assertSame(0, $action->getTaxPercentage());
     }
 
     /** @test */
@@ -70,18 +70,18 @@ class AddBalanceTest extends BaseTestCase
         $item = $items->first();
 
         $credit = $user->credit('EUR');
-        $this->assertEquals(1000, $credit->value);
-        $this->assertEquals('EUR', $credit->currency);
+        $this->assertSame(1000, $credit->value);
+        $this->assertSame('EUR', $credit->currency);
 
         $this->assertInstanceOf(OrderItemCollection::class, $items);
         $this->assertCount(1, $items);
         $this->assertInstanceOf(OrderItem::class, $item);
-        $this->assertEquals('Adding some test balance', $item->description);
+        $this->assertSame('Adding some test balance', $item->description);
 
-        $this->assertEquals('EUR', $item->currency);
-        $this->assertEquals(1000, $item->unit_price);
-        $this->assertEquals(1, $item->quantity);
-        $this->assertEquals(0, $item->tax_percentage);
+        $this->assertSame('EUR', $item->currency);
+        $this->assertSame(1000, $item->unit_price);
+        $this->assertSame(1, $item->quantity);
+        $this->assertSame(0, $item->tax_percentage);
         $this->assertNotNull($item->id); // item is persisted
         $this->assertFalse($item->isProcessed());
 
